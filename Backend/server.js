@@ -20,9 +20,6 @@ const REDIRECT_URI = process.env.LINKEDIN_REDIRECT_URI;
 
 console.log("Configured Redirect URI:", REDIRECT_URI);
 
-///////////////////////////////////////////////////////////
-// 🔹 LinkedIn Auth Routes
-///////////////////////////////////////////////////////////
 
 // Step 1: Redirect to LinkedIn Authorization URL
 app.get("/auth/linkedin", (req, res) => {
@@ -74,43 +71,19 @@ app.get("/auth/linkedin/callback", async (req, res) => {
             profile: userProfileResponse.data,
         });
     } catch (error) {
-        console.error("LinkedIn OAuth error:", error.response?.data || error.message);
-        res.status(500).json({
-            error: "Failed to authenticate",
-            details: error.response?.data || error.message,
-        });
+        // console.error("LinkedIn OAuth error:", {
+        //     message: error.message,
+        //     status: error.response?.status,
+        //     data: error.response?.data,
+        // });
+        // res.status(500).json({
+        //     error: "Failed to authenticate",
+        //     details: error.response?.data || error.message,
+        // });
     }
 });
 
-///////////////////////////////////////////////////////////
-// 🔹 Image Generator Route
-///////////////////////////////////////////////////////////
 
-// app.get("/generate-image", async (req, res) => {
-//     const url =
-//         "https://img4me.p.rapidapi.com/?text=Test%20Me&font=trebuchet&size=12&fcolor=000000&bcolor=FFFFFF&type=png";
-
-//     const options = {
-//         method: "GET",
-//         headers: {
-//             "x-rapidapi-key": process.env.RAPIDAPI_KEY, // store key in .env for security
-//             "x-rapidapi-host": "img4me.p.rapidapi.com",
-//         },
-//     };
-
-//     try {
-//         const response = await fetch(url, options);
-//         const imageUrl = await response.text(); // Should be a direct image URL
-//         res.send(imageUrl); // Send back the URL as plain text
-//     } catch (err) {
-//         console.error("Image API error:", err.message);
-//         res.status(500).json({ error: err.message });
-//     }
-// });
-
-///////////////////////////////////////////////////////////
-// Start Server
-///////////////////////////////////////////////////////////
 
 app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);

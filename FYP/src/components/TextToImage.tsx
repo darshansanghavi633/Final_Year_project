@@ -41,7 +41,7 @@ const TextToImage: React.FC = () => {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
             "x-rapidapi-key":
-              "f6e01f7b67msh8faee5adb940d72p1fb477jsn94cbf0f9b5c0",
+              "029b8bdf56mshebf5aa58f2106b1p186c6cjsnfbd96e2c6479",
             "x-rapidapi-host":
               "ai-text-to-image-generator-flux-free-api.p.rapidapi.com",
           },
@@ -73,9 +73,7 @@ const TextToImage: React.FC = () => {
   return (
     <Container className="d-flex justify-content-center mt-5 w-100">
       <Card className="p-4 shadow-lg w-100" style={{ maxWidth: "600px" }}>
-        <h3 className="mb-4 text-center text-primary">
-          Text to Image Generator
-        </h3>
+        <h3 className="mb-4 text-center text-primary">What's on your mind ?</h3>
         <Form>
           <Form.Group controlId="textInput">
             <Form.Control
@@ -122,7 +120,20 @@ const TextToImage: React.FC = () => {
         )}
         {image && !loading && (
           <div className="mt-4 text-center">
-            {caption && <p className="fw-semibold mb-2">{caption}</p>}
+            {caption && (
+              <>
+                <p className="fw-semibold mb-2">{caption}</p>
+                <Button
+                  variant="outline-primary"
+                  className="me-2 mb-2"
+                  onClick={() => {
+                    if (caption) navigator.clipboard.writeText(caption);
+                  }}
+                >
+                  Copy Caption
+                </Button>
+              </>
+            )}
             <Card.Img
               variant="top"
               src={image}
@@ -130,6 +141,32 @@ const TextToImage: React.FC = () => {
               className="rounded shadow-sm"
               style={{ maxWidth: "100%", height: "auto" }}
             />
+            <Button
+              variant="outline-success"
+              className="mt-3"
+              onClick={() => {
+                const link = document.createElement("a");
+                link.href = image;
+                link.download = "generated-image.jpg";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }}
+            >
+              Download Image
+            </Button>
+            <Button
+              variant="outline-info"
+              className="mt-2 ms-2"
+              onClick={() => {
+                const linkedInURL = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                  "https://yourwebsite.com" // Optional: Replace with your page URL
+                )}&summary=${encodeURIComponent(caption || "")}`;
+                window.open(linkedInURL, "_blank");
+              }}
+            >
+              Post to LinkedIn
+            </Button>
           </div>
         )}
       </Card>
