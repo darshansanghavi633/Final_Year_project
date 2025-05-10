@@ -6,6 +6,8 @@ const TextToImage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState<string | null>(null);
   const [caption, setCaption] = useState<string | null>(null);
+  const FASTAPI_URL = "https://b34c-34-105-94-205.ngrok-free.app/generate-image";
+  const API_KEY = "wXXSZOOTVopWndju9tOcVBblW5B7s2K1Tt49DZBc7EA";
 
   const handleGenerate = async () => {
     if (!text.trim()) return;
@@ -34,35 +36,24 @@ const TextToImage: React.FC = () => {
       }
 
       // Step 2: Call RapidAPI to generate the image (as binary)
-      const imageResponse = await fetch(
-        "https://ai-text-to-image-generator-flux-free-api.p.rapidapi.com/aaaaaaaaaaaaaaaaaiimagegenerator/fluximagegenerate/generateimage.php",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "x-rapidapi-key":
-              "029b8bdf56mshebf5aa58f2106b1p186c6cjsnfbd96e2c6479",
-            "x-rapidapi-host":
-              "ai-text-to-image-generator-flux-free-api.p.rapidapi.com",
-          },
-          body: new URLSearchParams({
-            prompt: text,
-            width: "1024",
-            height: "1024",
-            seed: "918440",
-            model: "flux",
-          }),
-        }
-      );
+      console.log(text)
+      // await new Promise((resolve) => setTimeout(resolve, 15000));
+      const imageResponse = await fetch(`${FASTAPI_URL}?prompt=${encodeURIComponent(text)}&api_key=${API_KEY}`, {
+        method: "GET",
+        mode: "cors",
+        cache: "no-store",
+      });
+      
+
 
       if (!imageResponse.ok) {
         throw new Error("Image generation failed.");
       }
+      console.log("Response content type:", imageResponse.headers.get('content-type'));
 
-      // Convert binary image response to object URL
-      const imageBlob = await imageResponse.blob();
-      const imageURL = URL.createObjectURL(imageBlob);
-      setImage(imageURL);
+      
+      window.open(`${FASTAPI_URL}?prompt=${encodeURIComponent(text)}&api_key=${API_KEY}`, '_blank');
+
     } catch (error) {
       console.error("Error generating image or caption:", error);
     } finally {
@@ -118,14 +109,14 @@ const TextToImage: React.FC = () => {
             <p className="mt-2 text-muted">Generating your image...</p>
           </div>
         )}
-        {image && !loading && (
+        {!loading && (
           <div className="mt-4 text-center">
             {caption && (
               <>
                 <p className="fw-semibold mb-2">{caption}</p>
                 <Button
                   variant="outline-primary"
-                  className="me-2 mb-2"
+                  className="mt-3 ms-2"
                   onClick={() => {
                     if (caption) navigator.clipboard.writeText(caption);
                   }}
@@ -134,14 +125,15 @@ const TextToImage: React.FC = () => {
                 </Button>
               </>
             )}
-            <Card.Img
+            {/* <Card.Img
               variant="top"
               src={image}
               alt="Generated"
               className="rounded shadow-sm"
               style={{ maxWidth: "100%", height: "auto" }}
-            />
-            <Button
+            /> */}
+
+            {/* <Button
               variant="outline-success"
               className="mt-3"
               onClick={() => {
@@ -154,10 +146,10 @@ const TextToImage: React.FC = () => {
               }}
             >
               Download Image
-            </Button>
+            </Button> */}
             <Button
               variant="outline-info"
-              className="mt-2 ms-2"
+              className="mt-3 ms-2"
               onClick={() => {
                 const linkedInURL = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
                   "https://yourwebsite.com" // Optional: Replace with your page URL
